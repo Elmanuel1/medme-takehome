@@ -8,13 +8,11 @@ import { calendar_v3 } from '@googleapis/calendar';
  */
 export class CalendarService implements ICalendarService {
   private readonly rangeDays: number;
-  private readonly timeZone: string;
   private readonly calendar: calendar_v3.Calendar;
   private readonly primaryCalendarId: string;
 
-  constructor(config: { primaryCalendarId: string; rangeDays: number; timeZone?: string }, calendar: calendar_v3.Calendar) {
+  constructor(config: { primaryCalendarId: string; rangeDays: number }, calendar: calendar_v3.Calendar) {
     this.rangeDays = config.rangeDays;
-    this.timeZone = config.timeZone || 'UTC';
     this.calendar = calendar;
     this.primaryCalendarId = config.primaryCalendarId;
   }
@@ -30,7 +28,7 @@ export class CalendarService implements ICalendarService {
         requestBody: {
           timeMin: timeMin.toISOString(),
           timeMax: timeMax.toISOString(),
-          timeZone: this.timeZone,
+          timeZone: 'UTC',
           items: [{ id: this.primaryCalendarId }]
         }
       });
@@ -63,7 +61,7 @@ export class CalendarService implements ICalendarService {
           timeMin: timeMin.toISOString(),
           timeMax: timeMax.toISOString(),
           primaryCalendarId: this.primaryCalendarId,
-          timeZone: this.timeZone
+          timeZone: 'UTC'
         },
         fullError: err
       });
@@ -83,11 +81,11 @@ export class CalendarService implements ICalendarService {
         description: `${appointment.reason || `${appointment.type.charAt(0).toUpperCase() + appointment.type.slice(1)} appointment`}\n\nPatient: ${appointment.firstName} ${appointment.lastName}\nEmail: ${appointment.email || 'Not provided'}\nPhone: ${appointment.phoneNumber || 'Not provided'}`,
         start: {
           dateTime: appointment.startAt.toISOString(),
-          timeZone: this.timeZone,
+          timeZone: 'UTC', // Use UTC since toISOString() converts to UTC
         },
         end: {
           dateTime: appointment.endAt.toISOString(),
-          timeZone: this.timeZone,
+          timeZone: 'UTC', // Use UTC since toISOString() converts to UTC
         },
         // Removed attendees field to avoid Domain-Wide Delegation requirement
         // Patient info is included in the description instead
@@ -141,11 +139,11 @@ export class CalendarService implements ICalendarService {
         description: `${appointment.reason || `${appointment.type.charAt(0).toUpperCase() + appointment.type.slice(1)} appointment`}\n\nPatient: ${appointment.firstName} ${appointment.lastName}\nEmail: ${appointment.email || 'Not provided'}\nPhone: ${appointment.phoneNumber || 'Not provided'}`,
         start: {
           dateTime: appointment.startAt.toISOString(),
-          timeZone: this.timeZone,
+          timeZone: 'UTC', // Use UTC since toISOString() converts to UTC
         },
         end: {
           dateTime: appointment.endAt.toISOString(),
-          timeZone: this.timeZone,
+          timeZone: 'UTC', // Use UTC since toISOString() converts to UTC
         },
         // Removed attendees field to avoid Domain-Wide Delegation requirement
       };

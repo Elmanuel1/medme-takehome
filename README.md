@@ -297,7 +297,7 @@ npm run test:integration   # Integration tests (requires Docker)
 # Test the built application
 npm start                  # Run production build locally
 curl http://localhost:3000/health  # Verify health endpoint
-# Demo page available at: http://localhost:3000/demo
+ea# Demo page available at: http://localhost:3000/demo
 ```
 
 ## 🧪 Testing

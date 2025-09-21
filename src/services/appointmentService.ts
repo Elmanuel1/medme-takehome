@@ -194,6 +194,7 @@ export class AppointmentService implements IAppointmentService {
     const hoursUntilAppointment = (appointmentDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
 
     if (hoursUntilAppointment < 2) {
+      console.log(`⏰ Cancellation blocked: Appointment at ${appointmentDateTime.toISOString()}, Current time: ${now.toISOString()}, Hours until: ${hoursUntilAppointment.toFixed(2)}`);
       throw new AppointmentCancellationError('Cannot cancel appointments less than 2 hours before start time');
     }
   }

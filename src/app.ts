@@ -51,7 +51,6 @@ export async function buildApp() {
     {
       primaryCalendarId: process.env.GOOGLE_PRIMARY_CALENDAR_ID || 'primary',
       rangeDays: Number(process.env.GOOGLE_FREEBUSY_RANGE_DAYS || 7),
-      timeZone: process.env.GOOGLE_TIMEZONE || 'UTC',
     },
     googleCalendarClient
   );

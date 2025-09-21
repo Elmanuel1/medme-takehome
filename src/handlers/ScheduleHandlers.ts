@@ -32,19 +32,12 @@ export class ScheduleHandlers {
     const body = request.body as any;
     const signature = request.headers['x-retell-signature'] as string;
 
-    // Debug logging - log incoming request
-    console.log('🔍 DEBUG: Incoming Retell webhook request');
-    console.log('📥 Headers:', JSON.stringify(request.headers, null, 2));
-    console.log('📦 Body:', JSON.stringify(body, null, 2));
-    console.log('🔐 Signature:', signature);
-
     try {
          Retell.verify(
           JSON.stringify(body),
           process.env.RETELL_API_KEY!,
           signature
         );
-        console.log('✅ Signature verification passed');
       } catch (error) {
         console.error('❌ Signature verification failed:', error);
         reply.code(200).send({ success: false, code: 'INVALID_SIGNATURE', message: 'Invalid signature' });
@@ -52,9 +45,7 @@ export class ScheduleHandlers {
       }
 
     const { name, call, args } = body;
-    console.log('🎯 Function name:', name);
-    console.log('📞 Call object:', JSON.stringify(call, null, 2));
-    console.log('📋 Arguments:', JSON.stringify(args, null, 2));
+    console.log(`📞 ${name}:`, args);
 
     // Handle different custom function names
     switch (name) {
@@ -77,10 +68,7 @@ export class ScheduleHandlers {
   });
 
   private async handleScheduleAppointment(call: any, args: any, reply: FastifyReply) {
-    console.log('📅 DEBUG: handleScheduleAppointment called');
-    console.log('📞 Call data:', JSON.stringify(call, null, 2));
     const { firstName, lastName, email, phoneNumber, startAt, endAt, type, notes, reason } = args;
-    console.log('📝 Extracted args:', { firstName, lastName, email, phoneNumber, startAt, endAt, type, notes, reason });
 
     const parsed = ScheduleRequestSchema.safeParse({
       firstName,
@@ -90,7 +78,7 @@ export class ScheduleHandlers {
       startAt,
       endAt,
       type,
-      notes: call, // Store the full call object for complete logging
+      notes: call,
       reason,
       callId: call?.call_id
     });
@@ -111,9 +99,7 @@ export class ScheduleHandlers {
   }
 
   private async handleCheckBookedSlots(call: any, args: any, reply: FastifyReply) {
-    console.log('📆 DEBUG: handleCheckBookedSlots called');
     const { dateStr } = args;
-    console.log('📝 dateStr received:', dateStr, typeof dateStr);
     
     // Validate date string
     if (!dateStr || typeof dateStr !== 'string') {
@@ -139,16 +125,27 @@ export class ScheduleHandlers {
     
     const bookedSlots = await this.calendarService.getBookedSlotsForDate(date);
 
+    // Convert dateStr to UTC for comparison
+    const checkTimeUTC = new Date(dateStr).toISOString();
+
+    // Check if the dateStr time is among the booked slots using functional approach
+    const available = !bookedSlots.some(slot => {
+      const slotStart = new Date(slot.start).toISOString();
+      const slotEnd = new Date(slot.end).toISOString();
+      
+      // Check if the dateStr time falls within any booked slot
+      return checkTimeUTC >= slotStart && checkTimeUTC < slotEnd;
+    });
+
     reply.send({
       success: "true",
-      bookedSlots
+      bookedSlots,
+      available
     });
   }
 
   private async handleRescheduleAppointment(call: any, args: any, reply: FastifyReply) {
-    console.log('🔄 DEBUG: handleRescheduleAppointment called');
     const { appointmentId, startAt, endAt, type } = args;
-    console.log('📝 Received args:', { appointmentId, startAt, endAt, type });
     
     // Validate inputs
     if (!appointmentId) {
@@ -216,9 +213,7 @@ export class ScheduleHandlers {
   }
 
   private async handleCancelAppointment(call: any, args: any, reply: FastifyReply) {
-    console.log('❌ DEBUG: handleCancelAppointment called');
     const { appointmentId } = args;
-    console.log('📝 appointmentId received:', appointmentId);
     
     // Validate appointmentId
     if (!appointmentId) {
@@ -264,8 +259,6 @@ export class ScheduleHandlers {
 
 
   private async handleGetCurrentTime(call: any, args: any, reply: FastifyReply) {
-    console.log('🕐 DEBUG: handleGetCurrentTime called');
-    
     const currentTime = new Date();
     const timeString = currentTime.toISOString();
     const readableTime = currentTime.toLocaleString('en-US', {
@@ -279,9 +272,6 @@ export class ScheduleHandlers {
       second: '2-digit',
       timeZoneName: 'short'
     });
-
-    console.log('🕐 Current UTC time:', timeString);
-    console.log('🕐 Readable time:', readableTime);
 
     reply.send({
       success: "true",
