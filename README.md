@@ -217,6 +217,9 @@ psql -h localhost -p 5432 -U postgres -d medme_schedule < sql/V1__create_appoint
 
 # Update your .env file with the DATABASE_URL:
 DATABASE_URL=postgresql://postgres:password@localhost:5432/medme_schedule
+
+# Copy .env to .env.local for the development server:
+cp .env .env.local
 ```
 
 **Start Development:**
