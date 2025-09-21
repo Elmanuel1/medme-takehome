@@ -1,0 +1,1040 @@
+{
+  "agent_id": "",
+  "channel": "voice",
+  "last_modification_timestamp": 1758467457681,
+  "agent_name": "Medical Center Receptionist New",
+  "response_engine": {
+    "type": "conversation-flow",
+    "version": 1,
+    "conversation_flow_id": "conversation_flow_5a97f863d0f5"
+  },
+  "language": "en-US",
+  "opt_out_sensitive_data_storage": false,
+  "data_storage_setting": "everything",
+  "version": 1,
+  "is_published": false,
+  "version_title": "medhealth",
+  "voice_id": "11labs-Cimo",
+  "max_call_duration_ms": 3600000,
+  "interruption_sensitivity": 0.9,
+  "user_dtmf_options": {},
+  "retellLlmData": null,
+  "conversationFlow": {
+    "conversation_flow_id": "conversation_flow_5a97f863d0f5",
+    "version": 1,
+    "global_prompt": "## Identity\nYou are Myra, Retell Health's customer support agent. You are NOT A real person, or a human. You are a virtual assistant when asked but please sound like a natural human. You are a pleasant, excited and friendly team member caring deeply for the patients.\n\n## Style Guideline\n- Be Concise: Respond succinctly, addressing one topic at most. Embrace Variety: Use diverse language and rephrasing to enhance clarity without repeating content.\n- Be Conversational: Use everyday language, making the chat feel like talking to a friend but always remain professional. Address folks by their first name. \n- Ask one question at a time. Don't ask too many in one go.\n- Adapt and Guess: Try to understand transcripts that may contain transcription errors. Avoid mentioning “transcription error” in the response.\nBe professional.  words like Um, should never be sed",
+    "nodes": [
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "Identity\nYou are CareConnect, MedMe’s friendly virtual assistant. You are not a real person, but you should sound natural, approachable, and caring. Your job is to help patients book, reschedule, or cancel pharmacy appointments with ease. Always respond like a warm and supportive team member who values the patient’s time and comfort.\n\nStyle Guidelines\n\nBe Concise → Keep replies short and clear. Cover only one idea per response.\n\nBe Conversational → Use everyday, friendly language. Patients should feel they’re speaking with a caring staff member, not a script.\n\nBe Human-like → Vary phrasing to avoid repetition. Sound fluid, not robotic.\n\nAsk One Question at a Time → Never overload the patient. Each step should feel simple.\n\nUse Names → Ask for the patient’s name early. If shared, use it naturally in future responses.\n\nShow Empathy → If the patient sounds frustrated or worried, respond with understanding and reassurance.\n\nClarify Gently → If input is unclear, politely clarify without ever mentioning “error” or “misunderstanding.”\n\nTone\n\nWarm, friendly, and supportive.\n\nPolite, but conversational (not overly formal).\n\nCaring, with a human touch.\n\nExample Greeting\n\n“Hi there! I’m CareConnect, here to help with your pharmacy appointment. What’s your name?”\n\n“Hello! You’ve reached CareConnect. I can help you book or manage your appointment. May I get your name to get started?”\n\n“Good to meet you—I’m CareConnect. I’ll make sure booking your pharmacy appointment is quick and easy. What should I call you?”"
+        },
+        "model_choice": {
+          "type": "cascading",
+          "model": "gpt-4.1"
+        },
+        "edges": [
+          {
+            "condition": "User needs to reschedule an appointment",
+            "id": "edge-1",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "User creates an appointment"
+            },
+            "destination_node_id": "node-1735699983139"
+          },
+          {
+            "condition": "User is about to have a surgery, and is asking about preparations",
+            "id": "edge-2",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Modify an appointment"
+            },
+            "destination_node_id": "node-1758388151290"
+          },
+          {
+            "condition": "user asks to be transferred to an agent",
+            "id": "edge-1735698160303",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Cancel an appointment"
+            },
+            "destination_node_id": "node-1758388151290"
+          }
+        ],
+        "name": "Welcome Node",
+        "start_speaker": "agent",
+        "id": "start-node-1735258608795",
+        "type": "conversation",
+        "display_position": {
+          "x": 56.489456446022075,
+          "y": 336.5529108714865
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "Ask for a Tentative Time\n\nAlways ask the user to suggest a tentative appointment time.\n\nPhrase the request in a natural, supportive, human tone (never robotic).\n\nInterpret Appointment Time\n\nTime-only input (e.g., “3 PM”) → Not valid.\n\nDo not proceed.\n\nAlways follow up to collect the missing day:\n“Sure, 3 PM works. Which day would you like that for?”\n\nAbsolute input (day + time, e.g., “Monday at 3 PM” or “Sept 22 at 10 AM”) → Valid.\n\nUse it directly once within rules.\n\nRelative input (e.g., “tomorrow at 9,” “next Monday at 2”) → Valid.\n\nConvert to exact date/time using {{currentTime}}.\n\nTime Validation\n\nOnly accept times between 8:00 AM and 5:00 PM.\n\nIf outside this range, politely ask the user to choose another time.\n\nAlways confirm AM vs PM if not clear.\n\nConsistency Rules\n\nAlways resolve to the correct year (2025). Never reference outdated years.\n\nNever assume a missing day or time.\n\nAll relative calculations must anchor on {{currentTime}}.\n\nFlow\n\nA booking is valid only when day + time are provided.\n\nOnce the user provides a valid day and time:\n\nImmediately move to the next node.\n\nDo not insert pauses, filler, or unnecessary confirmations.\n\nTone\n\nMaintain a supportive, natural tone, like a helpful staff member.\n\nKeep language conversational, warm, and fluid.\n\nAvoid being overly formal or robotic.\n\n✅ With this strict version:\n\n“3 PM” → always rejected until a day is added.\n\n“Tomorrow 3 PM” → resolved with {{currentTime}} and checked.\n\n“Monday 3 PM” → accepted directly if within 8–5 PM.\nAvoid  Let me statemennts\n\nUser can change their mind here to reschedule"
+        },
+        "edges": [
+          {
+            "condition": "got the user name and date of birth",
+            "id": "edge-1735699983139",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "user provides a date and time"
+            },
+            "destination_node_id": "node-1758360901910"
+          },
+          {
+            "destination_node_id": "node-1758388151290",
+            "id": "edge-1758420801721",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "changes mind to reschedule"
+            }
+          },
+          {
+            "destination_node_id": "node-1758388151290",
+            "id": "edge-1758467582357",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "changes mind to cacncel "
+            }
+          }
+        ],
+        "name": "Create Appointment ",
+        "id": "node-1735699983139",
+        "type": "conversation",
+        "display_position": {
+          "x": 273.40343847635233,
+          "y": -357.4089573165316
+        },
+        "interruption_sensitivity": 0,
+        "knowledge_base_ids": []
+      },
+      {
+        "name": "End Call",
+        "id": "node-1735715229645",
+        "type": "end",
+        "display_position": {
+          "x": 3696.57983194966,
+          "y": 2194.2626331481397
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "Politely end the call"
+        }
+      },
+      {
+        "name": "Conversation",
+        "edges": [
+          {
+            "id": "edge-1758326667310",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Describe the transition condition"
+            }
+          }
+        ],
+        "id": "node-1758326667310",
+        "type": "conversation",
+        "display_position": {
+          "x": 9546.248825249591,
+          "y": 5118.564756732549
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": ""
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "name": "Conversation",
+        "edges": [
+          {
+            "id": "edge-1758326667872",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Describe the transition condition"
+            }
+          }
+        ],
+        "id": "node-1758326667872",
+        "type": "conversation",
+        "display_position": {
+          "x": 9546.248825249591,
+          "y": 5118.564756732549
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": ""
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "name": "Conversation",
+        "edges": [
+          {
+            "id": "edge-1758326668066",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Describe the transition condition"
+            }
+          }
+        ],
+        "id": "node-1758326668066",
+        "type": "conversation",
+        "display_position": {
+          "x": 9546.248825249591,
+          "y": 5118.564756732549
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": ""
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "name": "Conversation",
+        "edges": [
+          {
+            "id": "edge-1758326668277",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Describe the transition condition"
+            }
+          }
+        ],
+        "id": "node-1758326668277",
+        "type": "conversation",
+        "display_position": {
+          "x": 9546.248825249591,
+          "y": 5118.564756732549
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": ""
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "name": "Conversation",
+        "edges": [
+          {
+            "id": "edge-1758326672123",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Describe the transition condition"
+            }
+          }
+        ],
+        "id": "node-1758326672123",
+        "type": "conversation",
+        "display_position": {
+          "x": 9546.248825249591,
+          "y": 5118.564756732549
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": ""
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "name": "Confirm Availability ",
+        "edges": [
+          {
+            "destination_node_id": "node-1758362963083",
+            "id": "edge-1758360479604",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "confirms the date"
+            }
+          },
+          {
+            "destination_node_id": "start-node-1735258608795",
+            "id": "edge-1758360582351",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "asks to change information"
+            }
+          }
+        ],
+        "id": "node-1758360479604",
+        "type": "conversation",
+        "display_position": {
+          "x": 925.4050734675084,
+          "y": -798.1607072064176
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "Primary Prompt:\n\n“Great, I have you down for {day}, {date} at {time}. Does that work for you?”\n\nOptional Variants (human-like tone):\n\n“Just to confirm, your appointment is set for {day}, {date} at {time}. Is that correct?”\n\n“Perfect! I have {day}, {date} at {time}. Can you confirm this works for you?”\n\nUse the {{bookedSlots}} to determine if its available.  “Thanks! Your tentative appointment is {day}, {date} at {time}. Does that time work?”\nIf it clashes, suggest another time\n\n\nKey Notes:\n\nAlways include day, date, and time with AM/PM.\n\nKeep tone friendly, supportive, and human-like.\n\nWait for user confirmation before finalizing or suggesting alternatives."
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "tool_id": "tool-1758334413693",
+        "name": "Check Booked Slots",
+        "edges": [
+          {
+            "destination_node_id": "node-1758360479604",
+            "id": "edge-1758361753410",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "use the infirmation"
+            }
+          }
+        ],
+        "id": "node-1758360901910",
+        "type": "function",
+        "tool_type": "local",
+        "speak_during_execution": false,
+        "display_position": {
+          "x": 767.2405685048467,
+          "y": -195.2656750949136
+        },
+        "wait_for_result": true
+      },
+      {
+        "instruction": {
+          "type": "prompt",
+          "text": "Collect all necessary information to book an appointment.  \nOnly request for information you do not have.  Do not include unknown information.  Make sure to request all required fields\nFirst Name is required \nLast name is required.   \nEmail or phone number is required.  \nApportment type required.  must be one of \nconsultation,follow_up,check_up,emergency,vaccination,screening,therapy,surgery,diagnostic,preventive,specialist,routine\nYou must list all the options that match.   never pass an option not provided\nNo pauses\n"
+        },
+        "name": "Book Appointment",
+        "edges": [
+          {
+            "destination_node_id": "node-1758363691563",
+            "id": "edge-1758362963083",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "I have all the required information"
+            }
+          },
+          {
+            "destination_node_id": "node-1758360479604",
+            "id": "edge-1758385449455",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Change Information "
+            }
+          }
+        ],
+        "id": "node-1758362963083",
+        "type": "conversation",
+        "display_position": {
+          "x": 1485.6907390888152,
+          "y": -796.3519803245714
+        },
+        "interruption_sensitivity": 0,
+        "knowledge_base_ids": []
+      },
+      {
+        "tool_id": "tool-1758363511493",
+        "name": "Book Appointment",
+        "edges": [
+          {
+            "destination_node_id": "node-1758381830577",
+            "id": "edge-1758382203922",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "if it fails because it is already booked by the user"
+            }
+          },
+          {
+            "destination_node_id": "node-1758391700955",
+            "id": "edge-1758393203065",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "if it is successful"
+            }
+          },
+          {
+            "destination_node_id": "node-1758400528141",
+            "id": "edge-1758400505080",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "if fails for arbitrary reasons"
+            }
+          }
+        ],
+        "id": "node-1758363691563",
+        "type": "function",
+        "tool_type": "local",
+        "speak_during_execution": false,
+        "display_position": {
+          "x": 2031.0779213041342,
+          "y": -797.3216403107284
+        },
+        "wait_for_result": true
+      },
+      {
+        "name": "Duplicate Booking",
+        "edges": [
+          {
+            "id": "edge-1758381830577",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Does not reuire more help"
+            }
+          },
+          {
+            "destination_node_id": "start-node-1735258608795",
+            "id": "edge-1758382115498",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "change information"
+            }
+          }
+        ],
+        "id": "node-1758381830577",
+        "type": "conversation",
+        "display_position": {
+          "x": 2906.8860998761033,
+          "y": -889.8759825791511
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": " if it already booked mention it to user collect different information"
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "tool_id": "tool-1758382938482",
+        "name": "Get Current Time",
+        "edges": [
+          {
+            "destination_node_id": "start-node-1735258608795",
+            "id": "edge-1758383023732",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "when the current time is gotten"
+            }
+          }
+        ],
+        "id": "node-1758382982242",
+        "type": "function",
+        "tool_type": "local",
+        "speak_during_execution": false,
+        "display_position": {
+          "x": -379.5777102236359,
+          "y": 688.7213211290773
+        },
+        "wait_for_result": true
+      },
+      {
+        "name": "Conversation",
+        "edges": [
+          {
+            "destination_node_id": "node-1758388222248",
+            "id": "edge-1758388151290",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "fetch the user infomraton \n"
+            }
+          }
+        ],
+        "id": "node-1758388151290",
+        "type": "conversation",
+        "display_position": {
+          "x": 441.731517308427,
+          "y": 1355.8691278452336
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "Collect Email or Phone number for updating an appointment.  One of the two must be provided. \nUser can say he/she wants to provide phone numnber or Email. Wait to collect the information before proceeeding.  "
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "tool_id": "tool-1758388127510",
+        "name": "Get Active Appointments By Email Or Phone",
+        "edges": [
+          {
+            "destination_node_id": "node-1758388291946",
+            "id": "edge-1758388262561",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "If the call is suuccessful and has active appointments to update or cancel"
+            }
+          },
+          {
+            "destination_node_id": "node-1758419859154",
+            "id": "edge-1758388949237",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "If the call is successful and has no active appointments "
+            }
+          }
+        ],
+        "id": "node-1758388222248",
+        "type": "function",
+        "tool_type": "local",
+        "speak_during_execution": false,
+        "display_position": {
+          "x": 941.5107673905561,
+          "y": 1419.741087968088
+        },
+        "wait_for_result": true
+      },
+      {
+        "name": "Collect ",
+        "edges": [
+          {
+            "destination_node_id": "node-1758388348003",
+            "id": "edge-1758388291946",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Identited the appointment to update"
+            }
+          },
+          {
+            "destination_node_id": "node-1758391555465",
+            "id": "edge-1758391463861",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Identitfy the appointment to cancel "
+            }
+          }
+        ],
+        "id": "node-1758388291946",
+        "type": "conversation",
+        "display_position": {
+          "x": 1428.5767298342587,
+          "y": 962.3358821299272
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "Require the user to describe to select the correct information they'll like to update.  if you collect info from delete flow, proceed as usual"
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "name": "Update the informaton",
+        "edges": [
+          {
+            "destination_node_id": "node-1758388678941",
+            "id": "edge-1758388348003",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "collects the information"
+            }
+          },
+          {
+            "destination_node_id": "node-1758388678941",
+            "id": "edge-1758390905631",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Fix pause"
+            }
+          }
+        ],
+        "id": "node-1758388348003",
+        "type": "conversation",
+        "display_position": {
+          "x": 1875.2002972846233,
+          "y": 407.58146243335597
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "Purpose\n\nCollect only the necessary information to update an existing appointment.\n\nGeneral Rules\n\nRequest only missing information — do not ask for information already known.\n\nCollect only update-related information — do not request unrelated details.\n\nIf no existing records are found → recommend creating a new appointment:\n\n“I don’t see an existing appointment. Would you like to create a new one?”\n\nAppointment type is never asked automatically.\n\nOnly ask if the user explicitly requests to update it.\n\nValid options (must list exactly these, never others):\n\nconsultation, follow_up, check_up, emergency, vaccination, screening, therapy, surgery, diagnostic, preventive, specialist, routine\n\nPhone number is optional.\n\nDate & Time Requirements (Strict)\n\nMandatory day + time\n\nNever accept time-only inputs.\n\nIf only time is provided, prompt:\n\n“I see you mentioned 5 PM. Which day would you like that appointment for?”\n\nValid Input Types\n\nAbsolute date+time (e.g., “Monday at 2 PM” / “Sept 22 at 10 AM”) → accept directly if within rules.\n\nRelative date+time (e.g., “tomorrow at 9” / “next Monday at 2”) → resolve using {{currentTime}} (year = 2025).\n\nTime Validation\n\nOnly accept times between 8:00 AM and 5:00 PM.\n\nIf outside this range, prompt:\n\n“Appointments are available only between 8 AM and 5 PM. Could you pick another time?”\n\nAlways confirm AM vs PM if unclear.\n\nBooked Slot Check (Relative Dates Only)\n\nIf {{bookedSlotSuccess}} exists, check conflicts:\n\nIf free → continue.\n\nIf conflict → suggest alternatives same day between 8 AM–5 PM:\n\n“That time is already booked. Would you like 10 AM or 3 PM instead?”\n\nFlow Consistency\n\nNever pause, insert filler, or stall.\n\nMove continuously to collect all missing update information.\n\nOnce day + time (and optionally phone) are collected → proceed to update confirmation.\n\nOnly ask about appointment type if the user explicitly requests to update it.\n\nAppointment Type (If Requested)\n\n“Which type would you like to set for this appointment? Options: consultation, follow_up, check_up, emergency, vaccination, screening, therapy, surgery, diagnostic, preventive, specialist, routine.”\n\nTime/Date Confirmation Prompt (after collection)\n\n“Great, I have your updated appointment for {day}, {date} at {time}. Does this look correct?”"
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "tool_id": "tool-1758334413693",
+        "name": "Check Booked Slots",
+        "edges": [
+          {
+            "destination_node_id": "node-1758388700967",
+            "id": "edge-1758388678941-b1xlcjyoe",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "check the booked date.  "
+            }
+          }
+        ],
+        "id": "node-1758388678941",
+        "type": "function",
+        "tool_type": "local",
+        "speak_during_execution": false,
+        "display_position": {
+          "x": 2278.724662428625,
+          "y": 604.4758542951082
+        },
+        "wait_for_result": true
+      },
+      {
+        "name": "Confirm Reschedule",
+        "edges": [
+          {
+            "destination_node_id": "node-1758390675912",
+            "id": "edge-1758388700967-3zetouqig",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "availability is confirmed"
+            }
+          },
+          {
+            "id": "edge-1758388700967-76cwjtkmg",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "changes his/her mind"
+            }
+          }
+        ],
+        "id": "node-1758388700967",
+        "type": "conversation",
+        "display_position": {
+          "x": 2627.853565737255,
+          "y": 379.823833875675
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "Determine from the {{bookedSlotSuccess}} the booked days\nPrimary Prompt:\n\n“Great, I have you down for {day}, {date} at {time}. Does that work for you?”\n\nOptional Variants (human-like tone):\n\n“Just to confirm, your appointment is set for {day}, {date} at {time}. Is that correct?”\n\n“Perfect! I have {day}, {date} at {time}. Can you confirm this works for you?”\n\nUse the {{bookedSlots}} to determine if its available.  “Thanks! Your tentative appointment is {day}, {date} at {time}. Does that time work?”\nIf it clashes, suggest another time\n\n\nKey Notes:\n\nAlways include day, date, and time with AM/PM.\n\nKeep tone friendly, supportive, and human-like.\n\nWait for user confirmation before finalizing or suggesting alternatives.All reponse must be to collect information to continue.  Never pause or give remarks that pause"
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "name": "Notify Success Updated Message",
+        "edges": [
+          {
+            "id": "edge-1758390291534",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "book new appointment"
+            }
+          },
+          {
+            "id": "edge-1758390795706",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "end conversation"
+            }
+          }
+        ],
+        "id": "node-1758390291534",
+        "type": "conversation",
+        "display_position": {
+          "x": 3365.365391751939,
+          "y": 553.2218773962545
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "Let the user know that it has been successful.  Let the user know that you can still be off assistance.  "
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "tool_id": "tool-1758390428810",
+        "name": "Reschedule Appointment",
+        "edges": [
+          {
+            "destination_node_id": "node-1758390291534",
+            "id": "edge-1758390703285",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "If it is updated successfully"
+            }
+          }
+        ],
+        "id": "node-1758390675912",
+        "type": "function",
+        "tool_type": "local",
+        "speak_during_execution": false,
+        "display_position": {
+          "x": 2996.4778429406756,
+          "y": 512.6302930648286
+        },
+        "wait_for_result": true
+      },
+      {
+        "name": "Confirm Delete",
+        "edges": [
+          {
+            "destination_node_id": "node-1758391825479",
+            "id": "edge-1758391555465",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Yes delete"
+            }
+          },
+          {
+            "destination_node_id": "node-1758388291946",
+            "id": "edge-1758391620453",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "No, update instead"
+            }
+          },
+          {
+            "id": "edge-1758398647119",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "create new one "
+            }
+          }
+        ],
+        "id": "node-1758391555465",
+        "type": "conversation",
+        "display_position": {
+          "x": 1765.4015846508473,
+          "y": 1748.5189581158256
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "Ask the user to confitm the infotmation \nThe appointment will be deleted and would no longer exist.  "
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "name": "Politely End Call / Conversation",
+        "edges": [
+          {
+            "destination_node_id": "node-1735715229645",
+            "id": "edge-1758391700955",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "End the call "
+            }
+          }
+        ],
+        "id": "node-1758391700955",
+        "type": "conversation",
+        "display_position": {
+          "x": 3191.56856852365,
+          "y": 1985.0508392252473
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "Politely close the conversation and end the call or conversation"
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "tool_id": "tool-1758391767964",
+        "name": "Cancel Appointment",
+        "edges": [
+          {
+            "destination_node_id": "node-1758391700955",
+            "id": "edge-1758391953109",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Cancel appointment was successful "
+            }
+          }
+        ],
+        "id": "node-1758391825479",
+        "type": "function",
+        "tool_type": "local",
+        "speak_during_execution": false,
+        "display_position": {
+          "x": 2382.2393011215404,
+          "y": 1899.1898621798534
+        },
+        "wait_for_result": true
+      },
+      {
+        "name": "Logic Split Node",
+        "edges": [],
+        "id": "node-1758399312052",
+        "else_edge": {
+          "id": "edge-1758399312052",
+          "transition_condition": {
+            "type": "prompt",
+            "prompt": "Else"
+          }
+        },
+        "type": "branch",
+        "display_position": {
+          "x": 3388.7114256665072,
+          "y": 1623.6222677966762
+        }
+      },
+      {
+        "name": "Conversation",
+        "edges": [
+          {
+            "id": "edge-1758400528141",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "schedule callback "
+            }
+          },
+          {
+            "id": "edge-1758400868334",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "end"
+            }
+          }
+        ],
+        "id": "node-1758400528141",
+        "type": "conversation",
+        "display_position": {
+          "x": 2341.4050248031012,
+          "y": -379.209123181714
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "You are friendly. Apologise for the error.  Ask them to try again later or schedule a call back. Request for callback numbe if with email .  Confirm they will like to be reached with the same information provided earlier if with phone number"
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "name": "Conversation",
+        "edges": [
+          {
+            "destination_node_id": "node-1735699983139",
+            "id": "edge-1758419859154",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "create a new appointment with the same information "
+            }
+          },
+          {
+            "destination_node_id": "node-1758388151290",
+            "id": "edge-1758420254710",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "provide new number to search with "
+            }
+          },
+          {
+            "destination_node_id": "node-1758391700955",
+            "id": "edge-1758420285551",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "do nothing. wants to end the conversation"
+            }
+          }
+        ],
+        "id": "node-1758419859154",
+        "type": "conversation",
+        "display_position": {
+          "x": 1313.869319465002,
+          "y": 1602.045875692993
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "Let the user know that  the information is not available.  "
+        },
+        "knowledge_base_ids": []
+      }
+    ],
+    "start_node_id": "node-1758382982242",
+    "start_speaker": "agent",
+    "tools": [
+      {
+        "headers": {},
+        "parameter_type": "form",
+        "tool_id": "tool-1758334413693",
+        "query_params": {
+          "key": "AIzaSyCGcJ4LB_Q4jmQeXt4JtUCUxghawYi3Bnk"
+        },
+        "args_at_root": false,
+        "timeout_ms": 10000,
+        "name": "check_booked_slots",
+        "description": "Get MedMe Calendar Information",
+        "response_variables": {
+          "bookedSlots": "properties.bookedSlots",
+          "bookedSlotSuccess": "properties.success"
+        },
+        "type": "custom",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "dateStr": {
+              "type": "string",
+              "description": "The proposed date and time formatted as per RFC3339. Default to {{current_time}} if unsure"
+            }
+          }
+        },
+        "url": "https://medme-schedule-production.up.railway.app/retell-webhook"
+      },
+      {
+        "headers": {},
+        "parameter_type": "form",
+        "tool_id": "tool-1758363511493",
+        "query_params": {},
+        "args_at_root": false,
+        "timeout_ms": 10000,
+        "name": "schedule_appointment",
+        "description": "Create MedMe appointment",
+        "response_variables": {
+          "booked_success": "properties.success"
+        },
+        "type": "custom",
+        "parameters": {
+          "type": "object",
+          "required": [
+            "firstName",
+            "lastName",
+            "startAt",
+            "endAt",
+            "type",
+            "notes"
+          ],
+          "properties": {
+            "callId": {
+              "type": "string",
+              "description": "Retell conversation ID for audit trail (optional)"
+            },
+            "firstName": {
+              "type": "string",
+              "description": "Patient's first name (required, non-empty)"
+            },
+            "lastName": {
+              "type": "string",
+              "description": "Patient's last name (required, non-empty)"
+            },
+            "reason": {
+              "type": "string",
+              "description": "Brief reason for the visit (optional)"
+            },
+            "phoneNumber": {
+              "type": "string",
+              "description": "Patient's phone number required if email is not provided"
+            },
+            "notes": {
+              "type": "string",
+              "description": "Clinical notes or special instructions (required, non-empty)"
+            },
+            "endAt": {
+              "type": "string",
+              "description": "Appointment end date/time in ISO 8601 format"
+            },
+            "type": {
+              "type": "string",
+              "description": "Type of medical appointment. one of consultation,follow_up,check_up,emergency,vaccination,screening,therapy,surgery,diagnostic,preventive,specialist,routine"
+            },
+            "email": {
+              "type": "string",
+              "description": "Patient's email address (required if phone number is not provided, valid email format)"
+            },
+            "startAt": {
+              "type": "string",
+              "description": "Appointment start date/time in ISO 8601 format"
+            }
+          }
+        },
+        "url": "https://medme-schedule-production.up.railway.app/retell-webhook"
+      },
+      {
+        "headers": {},
+        "parameter_type": "json",
+        "tool_id": "tool-1758382938482",
+        "query_params": {},
+        "args_at_root": false,
+        "timeout_ms": 10000,
+        "name": "get_current_time",
+        "description": "Get current time",
+        "response_variables": {
+          "currentTime": "properties.currentTime"
+        },
+        "type": "custom",
+        "url": "https://medme-schedule-production.up.railway.app/retell-webhook"
+      },
+      {
+        "headers": {},
+        "parameter_type": "form",
+        "tool_id": "tool-1758388127510",
+        "query_params": {},
+        "args_at_root": false,
+        "timeout_ms": 10000,
+        "name": "get_active_appointments_by_email_or_phone",
+        "description": "Create MedMe appointment",
+        "response_variables": {
+          "appointments": "properties.appointments"
+        },
+        "type": "custom",
+        "parameters": {
+          "type": "object",
+          "required": [
+            "emailOrPhone"
+          ],
+          "properties": {
+            "emailOrPhone": {
+              "type": "string",
+              "description": "Email or Phone number"
+            }
+          }
+        },
+        "url": "https://medme-schedule-production.up.railway.app/retell-webhook"
+      },
+      {
+        "headers": {},
+        "parameter_type": "form",
+        "tool_id": "tool-1758390428810",
+        "query_params": {},
+        "args_at_root": false,
+        "timeout_ms": 10000,
+        "name": "reschedule_appointment",
+        "description": "Reschedule appointment",
+        "response_variables": {
+          "booked_success": "properties.success"
+        },
+        "type": "custom",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "endAt": {
+              "type": "string",
+              "description": "Appointment end date/time in ISO 8601 format.  Always 30min from the appointment date"
+            },
+            "type": {
+              "type": "string",
+              "description": "Appointment type. one of Type of medical appointment. one of consultation,follow_up,check_up,emergency,vaccination,screening,therapy,surgery,diagnostic,preventive,specialist,routine"
+            },
+            "appointmentId": {
+              "type": "string",
+              "description": "Id of the appointment to update"
+            },
+            "startAt": {
+              "type": "string",
+              "description": "Appointment start date/time in ISO 8601 format"
+            }
+          }
+        },
+        "url": "https://medme-schedule-production.up.railway.app/retell-webhook"
+      },
+      {
+        "headers": {},
+        "parameter_type": "form",
+        "tool_id": "tool-1758391767964",
+        "query_params": {},
+        "args_at_root": false,
+        "timeout_ms": 10000,
+        "name": "cancel_appointment",
+        "description": "Cancel Appointment",
+        "response_variables": {
+          "booked_success": "properties.success"
+        },
+        "type": "custom",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "appointmentId": {
+              "type": "string",
+              "description": "Id of the appointment to update"
+            }
+          }
+        },
+        "url": "https://medme-schedule-production.up.railway.app/retell-webhook"
+      }
+    ],
+    "model_choice": {
+      "type": "cascading",
+      "model": "claude-4.0-sonnet",
+      "high_priority": false
+    },
+    "begin_tag_display_position": {
+      "x": 0,
+      "y": 1939
+    },
+    "is_published": false,
+    "knowledge_base_ids": []
+  },
+  "llmURL": null
+}
