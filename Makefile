@@ -21,4 +21,5 @@ run:
 
 # Build and run with Docker
 docker-run:
+	npm run build
 	docker-compose up -d

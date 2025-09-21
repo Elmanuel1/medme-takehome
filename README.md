@@ -225,9 +225,6 @@ curl http://localhost:3000/health  # Verify health endpoint
 ```bash
 # Start application, database, and run migrations
 make docker-run
-
-# Or manually:
-docker-compose up -d
 ```
 
 **Access Points:**
