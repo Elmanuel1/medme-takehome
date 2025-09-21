@@ -1,27 +1,25 @@
 {
   "agent_id": "",
-  "channel": "voice",
-  "last_modification_timestamp": 1758467457681,
-  "agent_name": "Medical Center Receptionist New",
+  "channel": "chat",
+  "last_modification_timestamp": 1758478228422,
+  "agent_name": "Medical Center Receptionist Chat Agent",
   "response_engine": {
     "type": "conversation-flow",
-    "version": 1,
-    "conversation_flow_id": "conversation_flow_5a97f863d0f5"
+    "version": 4,
+    "conversation_flow_id": "conversation_flow_5c51dec3a68b"
   },
   "language": "en-US",
   "opt_out_sensitive_data_storage": false,
   "data_storage_setting": "everything",
-  "version": 1,
+  "end_call_after_silence_ms": 86400000,
+  "version": 4,
   "is_published": false,
-  "version_title": "medhealth",
-  "voice_id": "11labs-Cimo",
-  "max_call_duration_ms": 3600000,
-  "interruption_sensitivity": 0.9,
-  "user_dtmf_options": {},
+  "version_title": "",
+  "end_chat_after_silence_ms": 86400000,
   "retellLlmData": null,
   "conversationFlow": {
-    "conversation_flow_id": "conversation_flow_5a97f863d0f5",
-    "version": 1,
+    "conversation_flow_id": "conversation_flow_5c51dec3a68b",
+    "version": 4,
     "global_prompt": "## Identity\nYou are Myra, Retell Health's customer support agent. You are NOT A real person, or a human. You are a virtual assistant when asked but please sound like a natural human. You are a pleasant, excited and friendly team member caring deeply for the patients.\n\n## Style Guideline\n- Be Concise: Respond succinctly, addressing one topic at most. Embrace Variety: Use diverse language and rephrasing to enhance clarity without repeating content.\n- Be Conversational: Use everyday language, making the chat feel like talking to a friend but always remain professional. Address folks by their first name. \n- Ask one question at a time. Don't ask too many in one go.\n- Adapt and Guess: Try to understand transcripts that may contain transcription errors. Avoid mentioning “transcription error” in the response.\nBe professional.  words like Um, should never be sed",
     "nodes": [
       {
@@ -373,18 +371,27 @@
         "name": "Duplicate Booking",
         "edges": [
           {
+            "destination_node_id": "node-1758476638312",
             "id": "edge-1758381830577",
             "transition_condition": {
               "type": "prompt",
-              "prompt": "Does not reuire more help"
+              "prompt": "Does not require more help"
             }
           },
           {
-            "destination_node_id": "start-node-1735258608795",
+            "destination_node_id": "node-1758388348003",
             "id": "edge-1758382115498",
             "transition_condition": {
               "type": "prompt",
-              "prompt": "change information"
+              "prompt": "Wants to update the information by modifying it.  "
+            }
+          },
+          {
+            "destination_node_id": "node-1758388222248",
+            "id": "edge-1758477324115",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Want to cancel the information just created"
             }
           }
         ],
@@ -538,7 +545,7 @@
         },
         "instruction": {
           "type": "prompt",
-          "text": "Purpose\n\nCollect only the necessary information to update an existing appointment.\n\nGeneral Rules\n\nRequest only missing information — do not ask for information already known.\n\nCollect only update-related information — do not request unrelated details.\n\nIf no existing records are found → recommend creating a new appointment:\n\n“I don’t see an existing appointment. Would you like to create a new one?”\n\nAppointment type is never asked automatically.\n\nOnly ask if the user explicitly requests to update it.\n\nValid options (must list exactly these, never others):\n\nconsultation, follow_up, check_up, emergency, vaccination, screening, therapy, surgery, diagnostic, preventive, specialist, routine\n\nPhone number is optional.\n\nDate & Time Requirements (Strict)\n\nMandatory day + time\n\nNever accept time-only inputs.\n\nIf only time is provided, prompt:\n\n“I see you mentioned 5 PM. Which day would you like that appointment for?”\n\nValid Input Types\n\nAbsolute date+time (e.g., “Monday at 2 PM” / “Sept 22 at 10 AM”) → accept directly if within rules.\n\nRelative date+time (e.g., “tomorrow at 9” / “next Monday at 2”) → resolve using {{currentTime}} (year = 2025).\n\nTime Validation\n\nOnly accept times between 8:00 AM and 5:00 PM.\n\nIf outside this range, prompt:\n\n“Appointments are available only between 8 AM and 5 PM. Could you pick another time?”\n\nAlways confirm AM vs PM if unclear.\n\nBooked Slot Check (Relative Dates Only)\n\nIf {{bookedSlotSuccess}} exists, check conflicts:\n\nIf free → continue.\n\nIf conflict → suggest alternatives same day between 8 AM–5 PM:\n\n“That time is already booked. Would you like 10 AM or 3 PM instead?”\n\nFlow Consistency\n\nNever pause, insert filler, or stall.\n\nMove continuously to collect all missing update information.\n\nOnce day + time (and optionally phone) are collected → proceed to update confirmation.\n\nOnly ask about appointment type if the user explicitly requests to update it.\n\nAppointment Type (If Requested)\n\n“Which type would you like to set for this appointment? Options: consultation, follow_up, check_up, emergency, vaccination, screening, therapy, surgery, diagnostic, preventive, specialist, routine.”\n\nTime/Date Confirmation Prompt (after collection)\n\n“Great, I have your updated appointment for {day}, {date} at {time}. Does this look correct?”"
+          "text": "Purpose\n\nCollect only the necessary information to update an existing appointment. If you have the information, required no need to collect it except the changes\n\nGeneral Rules\n\nRequest only missing information — do not ask for information already known.\n\nCollect only update-related information — do not request unrelated details.\n\nIf no existing records are found → recommend creating a new appointment:\n\n“I don’t see an existing appointment. Would you like to create a new one?”\n\nAppointment type is never asked automatically.\n\nOnly ask if the user explicitly requests to update it.\n\nValid options (must list exactly these, never others):\n\nconsultation, follow_up, check_up, emergency, vaccination, screening, therapy, surgery, diagnostic, preventive, specialist, routine\n\nPhone number is optional.\n\nDate & Time Requirements (Strict)\n\nMandatory day + time\n\nNever accept time-only inputs.\n\nIf only time is provided, prompt:\n\n“I see you mentioned 5 PM. Which day would you like that appointment for?”\n\nValid Input Types\n\nAbsolute date+time (e.g., “Monday at 2 PM” / “Sept 22 at 10 AM”) → accept directly if within rules.\n\nRelative date+time (e.g., “tomorrow at 9” / “next Monday at 2”) → resolve using {{currentTime}} (year = 2025).\n\nTime Validation\n\nOnly accept times between 8:00 AM and 5:00 PM.\n\nIf outside this range, prompt:\n\n“Appointments are available only between 8 AM and 5 PM. Could you pick another time?”\n\nAlways confirm AM vs PM if unclear.\n\nBooked Slot Check (Relative Dates Only)\n\nIf {{bookedSlotSuccess}} exists, check conflicts:\n\nIf free → continue.\n\nIf conflict → suggest alternatives same day between 8 AM–5 PM:\n\n“That time is already booked. Would you like 10 AM or 3 PM instead?”\n\nFlow Consistency\n\nNever pause, insert filler, or stall.\n\nMove continuously to collect all missing update information.\n\nOnce day + time (and optionally phone) are collected → proceed to update confirmation.\n\nOnly ask about appointment type if the user explicitly requests to update it.\n\nAppointment Type (If Requested)\n\n“Which type would you like to set for this appointment? Options: consultation, follow_up, check_up, emergency, vaccination, screening, therapy, surgery, diagnostic, preventive, specialist, routine.”\n\nTime/Date Confirmation Prompt (after collection)\n\n“Great, I have your updated appointment for {day}, {date} at {time}. Does this look correct?”"
         },
         "knowledge_base_ids": []
       },
@@ -560,8 +567,8 @@
         "tool_type": "local",
         "speak_during_execution": false,
         "display_position": {
-          "x": 2278.724662428625,
-          "y": 604.4758542951082
+          "x": 2252.123668510396,
+          "y": 388.712236958362
         },
         "wait_for_result": true
       },
@@ -577,18 +584,19 @@
             }
           },
           {
+            "destination_node_id": "node-1758388348003",
             "id": "edge-1758388700967-76cwjtkmg",
             "transition_condition": {
               "type": "prompt",
-              "prompt": "changes his/her mind"
+              "prompt": "selects another time"
             }
           }
         ],
         "id": "node-1758388700967",
         "type": "conversation",
         "display_position": {
-          "x": 2627.853565737255,
-          "y": 379.823833875675
+          "x": 2598.2969058281114,
+          "y": 152.23755257527148
         },
         "instruction": {
           "type": "prompt",
@@ -600,6 +608,7 @@
         "name": "Notify Success Updated Message",
         "edges": [
           {
+            "destination_node_id": "node-1735699983139",
             "id": "edge-1758390291534",
             "transition_condition": {
               "type": "prompt",
@@ -607,10 +616,19 @@
             }
           },
           {
+            "destination_node_id": "node-1758388151290",
             "id": "edge-1758390795706",
             "transition_condition": {
               "type": "prompt",
-              "prompt": "end conversation"
+              "prompt": "Modify appointment"
+            }
+          },
+          {
+            "destination_node_id": "node-1758476638312",
+            "id": "edge-1758476458041",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "End Conversation"
             }
           }
         ],
@@ -622,7 +640,7 @@
         },
         "instruction": {
           "type": "prompt",
-          "text": "Let the user know that it has been successful.  Let the user know that you can still be off assistance.  "
+          "text": "Let the user know that it has been successful.  Let the user know that you can still be of assistance to create new one or modify existing . Do not lead conversation to end it except the user requests it "
         },
         "knowledge_base_ids": []
       },
@@ -644,8 +662,8 @@
         "tool_type": "local",
         "speak_during_execution": false,
         "display_position": {
-          "x": 2996.4778429406756,
-          "y": 512.6302930648286
+          "x": 2895.9851992495883,
+          "y": 243.6646878916244
         },
         "wait_for_result": true
       },
@@ -819,6 +837,59 @@
         "instruction": {
           "type": "prompt",
           "text": "Let the user know that  the information is not available.  "
+        },
+        "knowledge_base_ids": []
+      },
+      {
+        "name": "End Call",
+        "id": "node-1758476638312",
+        "type": "end",
+        "display_position": {
+          "x": 3747.8759843258167,
+          "y": 964.7500490495057
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "Politely end the call"
+        }
+      },
+      {
+        "name": "Successfully Booked ",
+        "edges": [
+          {
+            "destination_node_id": "node-1735699983139",
+            "id": "edge-1758477728968",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Book another one.  "
+            }
+          },
+          {
+            "destination_node_id": "node-1758388348003",
+            "id": "edge-1758477815989",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Wants to update the information by modifying it.  "
+            }
+          },
+          {
+            "destination_node_id": "node-1758388222248",
+            "id": "edge-1758477824241",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Want to cancel the information just created"
+            }
+          }
+        ],
+        "id": "node-1758477728968",
+        "type": "conversation",
+        "display_position": {
+          "x": 2765.1142271022254,
+          "y": -460.73252329188034
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "In the case it successful, let the user know and mention you can help them.   \n"
         },
         "knowledge_base_ids": []
       }

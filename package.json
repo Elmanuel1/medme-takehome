@@ -23,6 +23,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fastify/static": "^8.2.0",
     "@googleapis/calendar": "^12.0.0",
     "@supabase/supabase-js": "^2.57.4",
     "axios": "^1.12.2",

@@ -16,6 +16,9 @@ RUN npm ci
 # Copy pre-built output
 COPY dist ./dist
 
+# Copy demo directory for serving static demo page
+COPY demo ./demo
+
 # Remove dev dependencies after copying
 RUN npm prune --production
 

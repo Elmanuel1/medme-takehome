@@ -8,6 +8,7 @@ import { PostgresAppointmentRepository } from './repositories/postgresAppointmen
 import { IAppointmentRepository } from './repositories/interfaces/IAppointmentRepository';
 import { scheduleRoutes } from './routes/scheduleRoutes';
 import { calendar_v3, auth as gauth } from '@googleapis/calendar';
+import path from 'path';
 
 /**
  * Get the current time in UTC
@@ -68,6 +69,17 @@ export async function buildApp() {
   // Health check endpoint
   fastify.get('/health', async (request, reply) => {
     return { status: 'healthy', timestamp: new Date().toISOString() };
+  });
+
+  // Serve demo page
+  fastify.register(require('@fastify/static'), {
+    root: path.join(__dirname, '..', 'demo'),
+    prefix: '/demo/',
+  });
+
+  // Demo redirect
+  fastify.get('/demo', async (request, reply) => {
+    return reply.redirect('/demo/');
   });
 
   return fastify;

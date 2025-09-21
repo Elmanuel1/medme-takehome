@@ -20,6 +20,20 @@ The MedMe Scheduling Service provides AI-powered appointment management with:
 - ✅ Real-time Google Calendar synchronization
 - ✅ PostgreSQL database with data integrity constraints
 
+### 🎯 Live Demo
+
+Experience the AI receptionist in action! Access the interactive chat demo at:
+
+**Demo URL**: `http://localhost:3002/demo` (when running locally)
+
+The demo includes:
+- 🤖 **Retell AI Chat Widget**: Click the floating button to start a conversation
+- 💬 **Natural Language Processing**: Speak or type naturally to book appointments
+- 📅 **Real-time Integration**: Appointments are immediately synced to Google Calendar
+- 🔄 **Full Functionality**: Test booking, rescheduling, canceling, and viewing appointments
+
+Simply start the application and navigate to `/demo` to try the AI receptionist!
+
 ## 🏗️ System Design
 
 ### Architecture Overview
@@ -194,7 +208,7 @@ Upload the provided agent configuration to Retell AI:
 2. **Import Agent Configuration:**
    - Navigate to "Agents" section
    - Click "Create Agent" or "Import Agent"
-   - Upload the `retell.ai/Medical Center Receptionist New.json` file from this repository
+   - Upload the `retell.ai/Medical Center Receptionist Chat Agent.json` file from this repository
    
 3. **Configure Webhook Endpoint:**
    - The configuration already has the production URL: `https://medme-schedule-production.up.railway.app/retell-webhook`
@@ -221,6 +235,12 @@ Upload the provided agent configuration to Retell AI:
 ### Option A: Docker Development (Recommended)
 *Complete containerized environment with automatic migrations*
 
+**Setup Environment:**
+```bash
+# Copy environment variables for Docker
+cp .env .env.local
+```
+
 **Start Full Environment:**
 ```bash
 # Start application, database, and run migrations
@@ -229,6 +249,7 @@ make docker-run
 
 **Access Points:**
 - Application: http://localhost:3002
+- Demo Page: http://localhost:3002/demo
 - Database: localhost:5434
 - Database migrations handled by Flyway automatically
 
@@ -276,6 +297,7 @@ npm run test:integration   # Integration tests (requires Docker)
 # Test the built application
 npm start                  # Run production build locally
 curl http://localhost:3000/health  # Verify health endpoint
+# Demo page available at: http://localhost:3000/demo
 ```
 
 ## 🧪 Testing
@@ -342,10 +364,11 @@ PostgreSQL database with the following constraints:
 
 Due to time constraints, the following enhancements would significantly improve the system:
 
-### 1. **Knowledge Base Integration**
-- **Vector Database**: Implement PostgreSQL with pgvector extension for semantic search
-- **Appointment Intelligence**: Store and retrieve appointment patterns, frequently asked questions, and medical terminology
-- **Smart Suggestions**: Use embeddings to suggest appointment types based on patient descriptions
+### 1. **Knowledge Base Integration with Vector Store**
+- **Vector Database Setup**: Implement PostgreSQL with pgvector extension for semantic search capabilities
+- **Appointment Intelligence**: Store actual appointments as embeddings so AI can search and retrieve specific appointment details
+- **Knowledge Retrieval**: AI searches the vector store for relevant context before responding to complex queries
+- **Smart Suggestions**: Use vector similarity search to suggest appointment types, times, and doctors based on patient descriptions
 
 ### 2. **CI/CD Pipeline**
 - **Automated Deployments**: GitHub Actions for production deployments
