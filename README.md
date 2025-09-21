@@ -183,6 +183,39 @@ GOOGLE_TIMEZONE=America/New_York
 RETELL_WEBHOOK_SIGNING_KEY=your-retell-signing-key
 ```
 
+### 4. Retell AI Agent Configuration
+
+Upload the provided agent configuration to Retell AI:
+
+1. **Access Retell AI Dashboard:**
+   - Go to [Retell AI Dashboard](https://dashboard.retellai.com/)
+   - Sign in to your account
+
+2. **Import Agent Configuration:**
+   - Navigate to "Agents" section
+   - Click "Create Agent" or "Import Agent"
+   - Upload the `retell.ai/Medical Center Receptionist New.json` file from this repository
+   
+3. **Configure Webhook Endpoint:**
+   - The configuration already has the production URL: `https://medme-schedule-production.up.railway.app/retell-webhook`
+   - For local testing, update the webhook URL in each tool to your ngrok tunnel:
+   - Replace `https://medme-schedule-production.up.railway.app/retell-webhook` with `https://your-ngrok-url.ngrok-free.app/retell-webhook`
+
+4. **Update Environment Variables:**
+   - Copy the Retell webhook signing key from the dashboard
+   - Update `RETELL_WEBHOOK_SIGNING_KEY` in your `.env` file
+
+5. **Test Agent Functions:**
+   - The agent is configured to call these functions:
+     - `check_booked_slots` - Check appointment availability
+     - `schedule_appointment` - Book new appointments
+     - `get_active_appointments_by_email_or_phone` - Find existing appointments
+     - `reschedule_appointment` - Update appointment details
+     - `cancel_appointment` - Cancel appointments
+     - `get_current_time` - Get current UTC time
+
+**Note:** The agent configuration includes conversation flows for appointment booking, rescheduling, and cancellation with natural language processing optimized for medical receptionist interactions.
+
 ## 🔧 Development Options
 
 ### Option A: Docker Development (Recommended)
