@@ -338,6 +338,40 @@ PostgreSQL database with the following constraints:
 - Database connection pooling with error handling
 - Robust input validation
 
+## 🚧 Areas for Improvement
+
+Due to time constraints, the following enhancements would significantly improve the system:
+
+### 1. **Knowledge Base Integration**
+- **Vector Database**: Implement PostgreSQL with pgvector extension for semantic search
+- **Appointment Intelligence**: Store and retrieve appointment patterns, frequently asked questions, and medical terminology
+- **Smart Suggestions**: Use embeddings to suggest appointment types based on patient descriptions
+
+### 2. **CI/CD Pipeline**
+- **Automated Deployments**: GitHub Actions for production deployments
+- **Database Migrations**: Automated Flyway script execution in staging/production environments
+- **Testing Pipeline**: Automated unit, integration, and end-to-end testing
+- **Docker Registry**: Automated builds and pushes to container registry
+
+### 3. **User Authentication & Verification**
+- **Email Verification**: Send OTP or confirmation links before booking
+- **Phone Verification**: SMS-based verification for phone bookings
+- **Identity Validation**: Prevent fraudulent bookings with multi-factor authentication
+- **Patient Records**: Integration with existing medical record systems
+
+### 4. **Enhanced Notifications**
+- **Email Integration**: Send calendar invites (.ics files) that patients can add to their calendars
+- **SMS Notifications**: Appointment confirmations and reminders
+- **Calendar Sync**: Two-way sync with popular calendar applications (Outlook, Apple Calendar)
+- **Reminder System**: Automated reminders 24 hours and 1 hour before appointments
+
+### 5. **LLM Evaluation & Monitoring**
+- **Conversation Quality**: Real-time evaluation of AI responses for accuracy and empathy
+- **Node Performance**: Track success rates and failure points in conversation flows
+- **Intent Recognition**: Monitor and improve natural language understanding
+- **A/B Testing**: Test different conversation flows for optimal patient experience
+- **Analytics Dashboard**: Comprehensive metrics on booking success rates and conversation quality
+
 ---
 
 **Ready to schedule appointments with AI! 🤖📅**
