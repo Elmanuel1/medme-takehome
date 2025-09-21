@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   medme-schedule:
     build:
@@ -33,9 +31,25 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./sql/create_appointments_table.sql:/docker-entrypoint-initdb.d/create_appointments_table.sql
     ports:
       - "5434:5432"
+    networks:
+      - medme-network
+
+  flyway:
+    image: flyway/flyway:latest
+    container_name: medme-flyway
+    command: migrate
+    volumes:
+      - ./sql:/flyway/sql
+    environment:
+      - FLYWAY_URL=jdbc:postgresql://db:5432/medme_schedule
+      - FLYWAY_USER=postgres
+      - FLYWAY_PASSWORD=password
+      - FLYWAY_SCHEMAS=public
+      - FLYWAY_BASELINE_ON_MIGRATE=true
+    depends_on:
+      - db
     networks:
       - medme-network
 

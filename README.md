@@ -131,6 +131,13 @@ sequenceDiagram
 - Cancellation requires 2+ hours advance notice
 - Only date, time, and type fields can be modified during reschedule
 
+### Database Migrations
+The project uses **Flyway** for database schema management:
+- Version-controlled SQL migrations in `/sql` directory
+- Automatic migration execution during Docker startup
+- Migration naming: `V1__description.sql`, `V2__description.sql`, etc.
+- Supports rollback and migration history tracking
+
 ## 🛠️ Prerequisites
 
 - Node.js 18+
@@ -185,20 +192,38 @@ RETELL_WEBHOOK_SIGNING_KEY=your-retell-signing-key
 # Install PostgreSQL locally and create database
 createdb medme_schedule
 
-# Run the schema
-psql medme_schedule < sql/create_appointments_table.sql
+# Run the schema (Flyway migrations work with Docker only)
+psql medme_schedule < sql/V1__create_appointments_table.sql
 ```
 
 **Start Development:**
 ```bash
+# Build the TypeScript code first
+npm run build
+
+# Start development server
 npm run dev
+```
+
+**Testing During Development:**
+```bash
+# Run tests (uses Testcontainers for integration tests)
+npm test
+
+# Test individual components
+npm run test:unit          # Unit tests only
+npm run test:integration   # Integration tests (requires Docker)
+
+# Test the built application
+npm start                  # Run production build locally
+curl http://localhost:3000/health  # Verify health endpoint
 ```
 
 ### Option B: Docker Development (Recommended)
 
 **Start Full Environment:**
 ```bash
-# Start both application and database
+# Start application, database, and run migrations
 make docker-run
 
 # Or manually:
@@ -206,9 +231,24 @@ docker-compose up -d
 ```
 
 **Access Points:**
-- Application: http://localhost:3006
-- Database: localhost:5432
-- Schema automatically created on startup
+- Application: http://localhost:3002
+- Database: localhost:5434
+- Database migrations handled by Flyway automatically
+
+**Database Migration Management:**
+The project uses Flyway for database migrations (Docker only):
+```bash
+# Run migrations manually
+docker-compose run flyway migrate
+
+# Check migration status
+docker-compose run flyway info
+
+# Clean database (development only)
+docker-compose run flyway clean
+```
+
+**Note**: Flyway migrations are only available with Docker. For local development, run the SQL files manually as shown in Option A.
 
 ## 🧪 Testing
 
