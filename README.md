@@ -185,15 +185,38 @@ RETELL_WEBHOOK_SIGNING_KEY=your-retell-signing-key
 
 ## 🔧 Development Options
 
-### Option A: Local Development (PostgreSQL Required)
+### Option A: Docker Development (Recommended)
+*Complete containerized environment with automatic migrations*
+
+**Start Full Environment:**
+```bash
+# Start application, database, and run migrations
+make docker-run
+```
+
+**Access Points:**
+- Application: http://localhost:3002
+- Database: localhost:5434
+- Database migrations handled by Flyway automatically
+
+### Option B: Local Development (Run App on Host)
+*Run the Node.js application locally, use Docker for PostgreSQL only*
 
 **Database Setup:**
 ```bash
-# Install PostgreSQL locally and create database
-createdb medme_schedule
+# Start Docker PostgreSQL container
+docker run --name medme-postgres \
+  -e POSTGRES_DB=medme_schedule \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=password \
+  -p 5432:5432 \
+  -d postgres:14-alpine
 
-# Run the schema (Flyway migrations work with Docker only)
-psql medme_schedule < sql/V1__create_appointments_table.sql
+# Run the schema using psql with connection details
+psql -h localhost -p 5432 -U postgres -d medme_schedule < sql/V1__create_appointments_table.sql
+
+# Update your .env file with the DATABASE_URL:
+DATABASE_URL=postgresql://postgres:password@localhost:5432/medme_schedule
 ```
 
 **Start Development:**
@@ -219,49 +242,11 @@ npm start                  # Run production build locally
 curl http://localhost:3000/health  # Verify health endpoint
 ```
 
-### Option B: Docker Development (Recommended)
-
-**Start Full Environment:**
-```bash
-# Start application, database, and run migrations
-make docker-run
-```
-
-**Access Points:**
-- Application: http://localhost:3002
-- Database: localhost:5434
-- Database migrations handled by Flyway automatically
-
-**Database Migration Management:**
-The project uses Flyway for database migrations (Docker only):
-```bash
-# Run migrations manually
-docker-compose run flyway migrate
-
-# Check migration status
-docker-compose run flyway info
-
-# Clean database (development only)
-docker-compose run flyway clean
-```
-
-**Note**: Flyway migrations are only available with Docker. For local development, run the SQL files manually as shown in Option A.
-
 ## 🧪 Testing
 
 ```bash
 # Run all tests
 make test
-
-# Run specific test types
-make test-unit          # Unit tests only
-make test-integration   # Integration tests only
-
-# Or using npm
-npm test               # All tests
-npm run test:unit      # Unit tests
-npm run test:integration # Integration tests
-npm run test:watch     # Watch mode
 ```
 
 ## 🚀 Production Deployment
