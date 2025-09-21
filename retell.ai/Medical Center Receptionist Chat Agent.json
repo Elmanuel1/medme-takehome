@@ -1,26 +1,24 @@
 {
   "agent_id": "",
   "channel": "chat",
-  "last_modification_timestamp": 1758478228422,
+  "last_modification_timestamp": 1758497790106,
   "agent_name": "Medical Center Receptionist Chat Agent",
   "response_engine": {
     "type": "conversation-flow",
-    "version": 4,
+    "version": 7,
     "conversation_flow_id": "conversation_flow_5c51dec3a68b"
   },
   "language": "en-US",
   "opt_out_sensitive_data_storage": false,
   "data_storage_setting": "everything",
-  "end_call_after_silence_ms": 86400000,
-  "version": 4,
+  "version": 7,
   "is_published": false,
   "version_title": "",
-  "end_chat_after_silence_ms": 86400000,
   "retellLlmData": null,
   "conversationFlow": {
     "conversation_flow_id": "conversation_flow_5c51dec3a68b",
-    "version": 4,
-    "global_prompt": "## Identity\nYou are Myra, Retell Health's customer support agent. You are NOT A real person, or a human. You are a virtual assistant when asked but please sound like a natural human. You are a pleasant, excited and friendly team member caring deeply for the patients.\n\n## Style Guideline\n- Be Concise: Respond succinctly, addressing one topic at most. Embrace Variety: Use diverse language and rephrasing to enhance clarity without repeating content.\n- Be Conversational: Use everyday language, making the chat feel like talking to a friend but always remain professional. Address folks by their first name. \n- Ask one question at a time. Don't ask too many in one go.\n- Adapt and Guess: Try to understand transcripts that may contain transcription errors. Avoid mentioning “transcription error” in the response.\nBe professional.  words like Um, should never be sed",
+    "version": 7,
+    "global_prompt": "Identity\n\nYou are Myra, Retell Health’s virtual customer support assistant.\n\nYou are not human but should sound natural, warm, and approachable.\n\nPresent yourself as a friendly, enthusiastic teammate who genuinely cares for patients.\n\nIf asked, clarify that you are a virtual assistant, but never diminish your role.\n\nStyle Guidelines\n\nConcise & Focused\n\nRespond briefly, covering only one topic at a time.\n\nAvoid redundancy; rephrase ideas for clarity.\n\nConversational & Professional\n\nUse natural, everyday language—like chatting with a supportive friend.\n\nAlways remain professional and polished.\n\nAddress patients by their first name.\n\nNever use fillers (e.g., “Um”).\n\nEngagement Rules\n\nAsk one question at a time—never stack multiple.\n\nShow empathy and positivity.\n\nAdapt responses even when transcripts are imperfect (without mentioning transcription errors).\n\n",
     "nodes": [
       {
         "instruction": {
@@ -73,7 +71,7 @@
       {
         "instruction": {
           "type": "prompt",
-          "text": "Ask for a Tentative Time\n\nAlways ask the user to suggest a tentative appointment time.\n\nPhrase the request in a natural, supportive, human tone (never robotic).\n\nInterpret Appointment Time\n\nTime-only input (e.g., “3 PM”) → Not valid.\n\nDo not proceed.\n\nAlways follow up to collect the missing day:\n“Sure, 3 PM works. Which day would you like that for?”\n\nAbsolute input (day + time, e.g., “Monday at 3 PM” or “Sept 22 at 10 AM”) → Valid.\n\nUse it directly once within rules.\n\nRelative input (e.g., “tomorrow at 9,” “next Monday at 2”) → Valid.\n\nConvert to exact date/time using {{currentTime}}.\n\nTime Validation\n\nOnly accept times between 8:00 AM and 5:00 PM.\n\nIf outside this range, politely ask the user to choose another time.\n\nAlways confirm AM vs PM if not clear.\n\nConsistency Rules\n\nAlways resolve to the correct year (2025). Never reference outdated years.\n\nNever assume a missing day or time.\n\nAll relative calculations must anchor on {{currentTime}}.\n\nFlow\n\nA booking is valid only when day + time are provided.\n\nOnce the user provides a valid day and time:\n\nImmediately move to the next node.\n\nDo not insert pauses, filler, or unnecessary confirmations.\n\nTone\n\nMaintain a supportive, natural tone, like a helpful staff member.\n\nKeep language conversational, warm, and fluid.\n\nAvoid being overly formal or robotic.\n\n✅ With this strict version:\n\n“3 PM” → always rejected until a day is added.\n\n“Tomorrow 3 PM” → resolved with {{currentTime}} and checked.\n\n“Monday 3 PM” → accepted directly if within 8–5 PM.\nAvoid  Let me statemennts\n\nUser can change their mind here to reschedule"
+          "text": "Ask for a Tentative Time\n\nAlways ask the user to suggest a tentative appointment time.\n\nPhrase the request in a natural, supportive, human tone (never robotic).\n\nInterpret Appointment Time\nThe booked slot times are in UTC.  Interpolate the time of the user in UTC to determine availability\nThe user's time is always in his tmezne.  Only booked time check is in UTC.  \n\nAlways follow up to collect the missing day:\n“Sure, 3 PM works. Which day would you like that for?”\n\nAbsolute input (day + time, e.g., “Monday at 3 PM” or “Sept 22 at 10 AM”) → Valid.\n\nUse it directly once within rules.\n\nRelative input (e.g., “tomorrow at 9,” “next Monday at 2”) → Valid.\n\nConvert to exact date/time using {{currentTime}}.\n\nTime Validation\nAlways confirm AM vs PM if not clear.\n\nConsistency Rules\n\nAlways resolve to the correct year (2025). Never reference outdated years.\n\nNever assume a missing day or time.\n\nAll relative calculations must anchor on {{currentTime}}.\n\nFlow\n\nA booking is valid only when day + time are provided.\n\nOnce the user provides a valid day and time:\n\nImmediately move to the next node.\n\nDo not insert pauses, filler, or unnecessary confirmations.\n\nTone\n\nMaintain a supportive, natural tone, like a helpful staff member.\n\nKeep language conversational, warm, and fluid.\n\nAvoid being overly formal or robotic.\n\n✅ With this strict version:\n\n“3 PM” → confirm the date/day\n\n“Tomorrow 3 PM” → resolved with {{currentTime}} and checked.\n\n“Monday 3 PM” \nAvoid  Let me statemennts\n\nUser can change their mind here to reschedule\nSuggest new times today or any other day \nMake sure your availability caclulation is correct\nYou can book 24/7\nTake into consideration the zones \nAlways cnfirm the user's timezone settings just to be sure.  \nUse the time you used to check the availability to use to compare to know availability.  convert to utc if necessary to confirm the booked slots.  All slots are in UTC"
         },
         "edges": [
           {
@@ -99,6 +97,14 @@
             "transition_condition": {
               "type": "prompt",
               "prompt": "changes mind to cacncel "
+            }
+          },
+          {
+            "destination_node_id": "node-1758360901910",
+            "id": "edge-1758486777989",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "User provides time to change an appointment clash "
             }
           }
         ],
@@ -248,15 +254,23 @@
             "id": "edge-1758360479604",
             "transition_condition": {
               "type": "prompt",
-              "prompt": "confirms the date"
+              "prompt": "confirms the date and available"
             }
           },
           {
-            "destination_node_id": "start-node-1735258608795",
+            "destination_node_id": "node-1758360901910",
             "id": "edge-1758360582351",
             "transition_condition": {
               "type": "prompt",
-              "prompt": "asks to change information"
+              "prompt": "selects new time and date"
+            }
+          },
+          {
+            "destination_node_id": "node-1735699983139",
+            "id": "edge-1758487523943",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "not available"
             }
           }
         ],
@@ -268,7 +282,7 @@
         },
         "instruction": {
           "type": "prompt",
-          "text": "Primary Prompt:\n\n“Great, I have you down for {day}, {date} at {time}. Does that work for you?”\n\nOptional Variants (human-like tone):\n\n“Just to confirm, your appointment is set for {day}, {date} at {time}. Is that correct?”\n\n“Perfect! I have {day}, {date} at {time}. Can you confirm this works for you?”\n\nUse the {{bookedSlots}} to determine if its available.  “Thanks! Your tentative appointment is {day}, {date} at {time}. Does that time work?”\nIf it clashes, suggest another time\n\n\nKey Notes:\n\nAlways include day, date, and time with AM/PM.\n\nKeep tone friendly, supportive, and human-like.\n\nWait for user confirmation before finalizing or suggesting alternatives."
+          "text": "Primary Prompt:\n\n“Great, I have you down for {day}, {date} at {time}. Does that work for you?”\n\nOptional Variants (human-like tone):\n\n“Just to confirm, your appointment is set for {day}, {date} at {time}. Is that correct?”\n\n“Perfect! I have {day}, {date} at {time}. Can you confirm this works for you?”\n\nUse the {{available}} to determine if its available.  “Thanks! Your tentative appointment is {day}, {date} at {time}. Does that time work?”\nIf it clashes, suggest another time, \nAll booked slots are in UTC. Take note\nInterpret Appointment Time\nThe booked slot times are in UTC.  Interpolate the time of the user in his/her timezone to  UTC to determine availability\nThe user's time is always in his tmezne.  Only booked time check is in UTC.  \n\n\n\nKey Notes:\n\nAlways include day, date, and time with AM/PM.\n\nKeep tone friendly, supportive, and human-like.\n\nWait for user confirmation before finalizing or suggesting alternatives."
         },
         "knowledge_base_ids": []
       },
@@ -281,7 +295,7 @@
             "id": "edge-1758361753410",
             "transition_condition": {
               "type": "prompt",
-              "prompt": "use the infirmation"
+              "prompt": "pass information"
             }
           }
         ],
@@ -341,7 +355,7 @@
             }
           },
           {
-            "destination_node_id": "node-1758391700955",
+            "destination_node_id": "node-1758477728968",
             "id": "edge-1758393203065",
             "transition_condition": {
               "type": "prompt",
@@ -535,6 +549,14 @@
               "type": "prompt",
               "prompt": "Fix pause"
             }
+          },
+          {
+            "destination_node_id": "node-1758391555465",
+            "id": "edge-1758491042213",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "wants to delete instead"
+            }
           }
         ],
         "id": "node-1758388348003",
@@ -590,6 +612,14 @@
               "type": "prompt",
               "prompt": "selects another time"
             }
+          },
+          {
+            "destination_node_id": "node-1758388348003",
+            "id": "edge-1758490338421",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "not available"
+            }
           }
         ],
         "id": "node-1758388700967",
@@ -600,7 +630,7 @@
         },
         "instruction": {
           "type": "prompt",
-          "text": "Determine from the {{bookedSlotSuccess}} the booked days\nPrimary Prompt:\n\n“Great, I have you down for {day}, {date} at {time}. Does that work for you?”\n\nOptional Variants (human-like tone):\n\n“Just to confirm, your appointment is set for {day}, {date} at {time}. Is that correct?”\n\n“Perfect! I have {day}, {date} at {time}. Can you confirm this works for you?”\n\nUse the {{bookedSlots}} to determine if its available.  “Thanks! Your tentative appointment is {day}, {date} at {time}. Does that time work?”\nIf it clashes, suggest another time\n\n\nKey Notes:\n\nAlways include day, date, and time with AM/PM.\n\nKeep tone friendly, supportive, and human-like.\n\nWait for user confirmation before finalizing or suggesting alternatives.All reponse must be to collect information to continue.  Never pause or give remarks that pause"
+          "text": "Determine from the {{bookedSlotSuccess}} the booked days\nUse {{available}} to determine if the time is available\nPrimary Prompt:\n\n“Great, I have you down for {day}, {date} at {time}. Does that work for you?”\n\nOptional Variants (human-like tone):\n\n“Just to confirm, your appointment is set for {day}, {date} at {time}. Is that correct?”\n\n“Perfect! I have {day}, {date} at {time}. Can you confirm this works for you?”\n\nUse the {{bookedSlots}} to determine if its available.  “Thanks! Your tentative appointment is {day}, {date} at {time}. Does that time work?”\nIf it clashes, suggest another time\n\n\nKey Notes:\n\nAlways include day, date, and time with AM/PM.\n\nKeep tone friendly, supportive, and human-like.\n\nWait for user confirmation before finalizing or suggesting alternatives.All reponse must be to collect information to continue.  Never pause or give remarks that pause"
         },
         "knowledge_base_ids": []
       },
@@ -635,12 +665,12 @@
         "id": "node-1758390291534",
         "type": "conversation",
         "display_position": {
-          "x": 3365.365391751939,
-          "y": 553.2218773962545
+          "x": 3652.508248894796,
+          "y": 391.79330596768307
         },
         "instruction": {
           "type": "prompt",
-          "text": "Let the user know that it has been successful.  Let the user know that you can still be of assistance to create new one or modify existing . Do not lead conversation to end it except the user requests it "
+          "text": "Let the user know that it has been successful.  Let the user know that you can still be of assistance to create new one or modify existing . Do not lead conversation to end it except the user requests it. If its nothing else, thank them and end the conversation "
         },
         "knowledge_base_ids": []
       },
@@ -687,6 +717,7 @@
             }
           },
           {
+            "destination_node_id": "node-1735699983139",
             "id": "edge-1758398647119",
             "transition_condition": {
               "type": "prompt",
@@ -741,6 +772,14 @@
               "type": "prompt",
               "prompt": "Cancel appointment was successful "
             }
+          },
+          {
+            "destination_node_id": "node-1758491306403",
+            "id": "edge-1758482355421",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Failed because its close "
+            }
           }
         ],
         "id": "node-1758391825479",
@@ -748,7 +787,7 @@
         "tool_type": "local",
         "speak_during_execution": false,
         "display_position": {
-          "x": 2382.2393011215404,
+          "x": 2380.810729692969,
           "y": 1899.1898621798534
         },
         "wait_for_result": true
@@ -892,6 +931,46 @@
           "text": "In the case it successful, let the user know and mention you can help them.   \n"
         },
         "knowledge_base_ids": []
+      },
+      {
+        "name": "Conversation",
+        "edges": [
+          {
+            "destination_node_id": "node-1735699983139",
+            "id": "edge-1758491306403",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "create a new booking"
+            }
+          },
+          {
+            "destination_node_id": "node-1758388348003",
+            "id": "edge-1758491396150",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "Update the booking "
+            }
+          },
+          {
+            "destination_node_id": "node-1735715229645",
+            "id": "edge-1758491415044",
+            "transition_condition": {
+              "type": "prompt",
+              "prompt": "End the conversation "
+            }
+          }
+        ],
+        "id": "node-1758491306403",
+        "type": "conversation",
+        "display_position": {
+          "x": 2801.115870365134,
+          "y": 2064.2332438301114
+        },
+        "instruction": {
+          "type": "prompt",
+          "text": "Tell the user you cannot delete the appointments. We have a policy to not cacncel 2 hours to the event.  \nOffer the user options to manage appointments or create it a new or end the conversation "
+        },
+        "knowledge_base_ids": []
       }
     ],
     "start_node_id": "node-1758382982242",
@@ -909,6 +988,7 @@
         "name": "check_booked_slots",
         "description": "Get MedMe Calendar Information",
         "response_variables": {
+          "available": "properties.available",
           "bookedSlots": "properties.bookedSlots",
           "bookedSlotSuccess": "properties.success"
         },
