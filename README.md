@@ -388,7 +388,15 @@ Due to time constraints, the following enhancements would significantly improve 
 - **Calendar Sync**: Two-way sync with popular calendar applications (Outlook, Apple Calendar)
 - **Reminder System**: Automated reminders 24 hours and 1 hour before appointments
 
-### 5. **LLM Evaluation & Monitoring**
+### 5. **Email Confirmation System**
+- **Automatic Email Confirmations**: Send confirmation emails after appointment booking
+- **Calendar Attachments**: Include .ics files that patients can import to their calendars
+- **Multi-Platform Support**: Generate calendar links for Google, Outlook, and Apple Calendar
+- **Email Templates**: Professional HTML templates with appointment details
+- **Reminder System**: Automated email reminders 24 hours and 1 hour before appointments
+- **SMTP Integration**: Support for various email providers (SendGrid, Gmail, etc.)
+
+### 6. **LLM Evaluation & Monitoring**
 - **Conversation Quality**: Real-time evaluation of AI responses for accuracy and empathy
 - **Node Performance**: Track success rates and failure points in conversation flows
 - **Intent Recognition**: Monitor and improve natural language understanding

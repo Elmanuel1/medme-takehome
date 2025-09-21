@@ -3,6 +3,7 @@ import { Appointment, ScheduleRequest, AppointmentStatus } from '../types/schedu
 import { IAppointmentRepository } from '../repositories/interfaces/IAppointmentRepository';
 import { ICalendarService } from './interfaces/ICalendarService';
 import { IAppointmentService } from './interfaces/IAppointmentService';
+import { MessageService } from './emailService';
 import { 
   NotFoundError, 
   AppointmentCancellationError,
@@ -12,6 +13,7 @@ import {
 export class AppointmentService implements IAppointmentService {
   private appointmentRepository: IAppointmentRepository;
   private calendarService: ICalendarService;
+  private messageService: MessageService;
 
   constructor(
     appointmentRepository: IAppointmentRepository,
@@ -19,6 +21,7 @@ export class AppointmentService implements IAppointmentService {
   ) {
     this.appointmentRepository = appointmentRepository;
     this.calendarService = calendarService;
+    this.messageService = new MessageService();
   }
 
   async getActiveAppointmentsByEmailOrPhone(emailOrPhone: string): Promise<AppointmentEntity[]> {
@@ -66,6 +69,24 @@ export class AppointmentService implements IAppointmentService {
       // Update appointment with calendar event ID
       createdAppointment.setCalendarEventId(eventId);
       const updatedAppointment = await this.appointmentRepository.update(createdAppointment.id!, createdAppointment);
+      
+      // Send confirmation email
+      try {
+        console.log(`📧 Triggering confirmation email for appointment: ${updatedAppointment.id}, patient: ${updatedAppointment.firstName} ${updatedAppointment.lastName}, email: ${updatedAppointment.email || 'N/A'}`);
+        
+        const appointmentForEmail: Appointment = {
+          ...updatedAppointment,
+          id: updatedAppointment.id!,
+          createdAt: updatedAppointment.createdAt!,
+          updatedAt: updatedAppointment.updatedAt
+        };
+        await this.messageService.sendConfirmationMessage(appointmentForEmail);
+        
+        console.log(`✅ Confirmation email process completed for appointment: ${updatedAppointment.id}`);
+      } catch (emailError) {
+        console.error(`❌ Failed to send confirmation email for appointment: ${updatedAppointment.id}:`, emailError);
+        // Don't throw error - email failures shouldn't break appointment creation
+      }
       
       return updatedAppointment;
     } catch (calendarError) {
@@ -149,6 +170,34 @@ export class AppointmentService implements IAppointmentService {
       }
     }
 
+    // Send reschedule email if start time or end time changed
+    if (data.startAt || data.endAt) {
+      try {
+        console.log(`📧 Triggering reschedule email for appointment: ${dbResult.id}, patient: ${dbResult.firstName} ${dbResult.lastName}, email: ${dbResult.email || 'N/A'}`);
+        console.log(`🔄 Time change: ${appointment.startAt.toISOString()} → ${dbResult.startAt.toISOString()}`);
+        
+        const appointmentForEmail: Appointment = {
+          ...dbResult,
+          id: dbResult.id!,
+          createdAt: dbResult.createdAt!,
+          updatedAt: dbResult.updatedAt
+        };
+        
+        // Include old date/time info if available
+        const oldDateTime = (data.startAt || data.endAt) ? {
+          start: appointment.startAt,
+          end: appointment.endAt
+        } : undefined;
+        
+        await this.messageService.sendRescheduleMessage(appointmentForEmail, oldDateTime);
+        
+        console.log(`✅ Reschedule email process completed for appointment: ${dbResult.id}`);
+      } catch (emailError) {
+        console.error(`❌ Failed to send reschedule email for appointment: ${dbResult.id}:`, emailError);
+        // Don't throw error - email failures shouldn't break appointment updates
+      }
+    }
+
     return dbResult;
   }
 
@@ -175,6 +224,25 @@ export class AppointmentService implements IAppointmentService {
         console.error('Failed to delete calendar event:', calendarError);
         // Note: We don't rollback the DB update here as the appointment is already cancelled
       }
+    }
+
+    // Send cancellation email
+    try {
+      console.log(`📧 Triggering cancellation email for appointment: ${appointment.id}, patient: ${appointment.firstName} ${appointment.lastName}, email: ${appointment.email || 'N/A'}`);
+      console.log(`❌ Cancelled appointment: ${appointment.startAt.toISOString()} - ${appointment.type}`);
+      
+      const appointmentForEmail: Appointment = {
+        ...appointment,
+        id: appointment.id!,
+        createdAt: appointment.createdAt!,
+        updatedAt: appointment.updatedAt
+      };
+      await this.messageService.sendCancellationMessage(appointmentForEmail);
+      
+      console.log(`✅ Cancellation email process completed for appointment: ${appointment.id}`);
+    } catch (emailError) {
+      console.error(`❌ Failed to send cancellation email for appointment: ${appointment.id}:`, emailError);
+      // Don't throw error - email failures shouldn't break appointment cancellation
     }
 
     return true;
