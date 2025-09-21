@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  medme-schedule:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medme-schedule-app
+    ports:
+      - "3002:3000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:password@db:5432/medme_schedule"
+    env_file:
+      - .env
+    restart: unless-stopped
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - medme-network
+
+  db:
+    image: postgres:14-alpine
+    container_name: medme-postgres
+    environment:
+      POSTGRES_DB: medme_schedule
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/create_appointments_table.sql:/docker-entrypoint-initdb.d/create_appointments_table.sql
+    ports:
+      - "5434:5432"
+    networks:
+      - medme-network
+
+networks:
+  medme-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

@@ -1,0 +1,68 @@
+# Node modules
+node_modules
+npm-debug.log*
+
+# Build artifacts
+build
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Test files
+coverage
+**/*.test.ts
+**/*.test.js
+**/__tests__/**
+
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+docs/
+*.md
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Development files
+src/
+jest.config.js
+.prettierrc
+.eslintrc.js
